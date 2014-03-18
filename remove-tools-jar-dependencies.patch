@@ -1,0 +1,121 @@
+--- nailgun-0.7.1/build.xml	2005-02-03 22:08:40.000000000 -0500
++++ ../nailgun-0.7.1/build.xml	2010-01-26 16:14:42.645034236 -0500
+@@ -32,35 +32,22 @@
+ 	
+ 	<property name="build" value="build/ant"/>
+ 	<property name="build.prod" value="${build}/prod"/>
+ 	<property name="build.test" value="${build}/test"/>
+ 	<property name="build.debug" value="${build}/prod-debug"/>
+-	<property name="build.instrumented" value="${build}/prod-instrumented"/>
+ 	
+ 	<property name="docs" value="docs"/>
+ 	<property name="docs.junit" value="${docs}/junit"/>
+-	<property name="docs.jcoverage" value="${docs}/jcoverage"/>
+ 	<property name="docs.javadoc" value="${docs}/api"/>
+ 	
+ 	<property name="dist" value="dist"/>
+ 	
+-	<!-- declare the jcoverage tasks -->
+-	<path id="tools.classpath">
+-		<fileset dir="tools/lib">
+-        	<include name="**/*.jar"/>
+-      	</fileset>
+-	</path>
+-	<taskdef resource="tasks.properties">
+-		<classpath refid="tools.classpath"/>
+-	</taskdef>
+-
+ 	<target name="clean">
+ 		<delete dir="${build}"/>
+ 		<delete dir="docs"/>
+ 		<delete dir="dist"/>
+ 		<delete file="ng"/>
+-		<delete file="jcoverage.ser"/>
+ 	</target>
+ 		
+ 	<!-- updates version numbers in client and server code
+ 		 based upon ${version} property.  If the version has
+ 		 not changed since the last build, sources remain untouched. -->
+@@ -112,11 +99,10 @@
+ 		</copy>
+ 		
+ 		<javac destdir="${build.test}" srcdir="${src.java.test}">
+         	<classpath >
+         		<pathelement path="${build.prod}"/>
+-        		<path refid="tools.classpath"/>
+ 			</classpath>
+ 		</javac>
+ 	</target>
+ 		
+ 	<target name="compile-client" depends="init">
+@@ -128,39 +114,20 @@
+ 				 to installer script. -->
+ 			<arg line="ng.exe"/>
+ 		</exec>
+ 	</target>
+ 		
+-	<target name="instrument" depends="compile-server">
+-		<mkdir dir="${build.instrumented}"/>
+-	    <instrument todir="${build.instrumented}">
+-	      <fileset dir="${build.debug}">
+-	        <include name="**/*.class"/>
+-	      	<exclude name="com/martiansoftware/nailgun/examples/**"/>
+-	      	<exclude name="com/martiansoftware/nailgun/builtins/**"/>
+-	      </fileset>
+-	    </instrument>
+-		<copy todir="${build.instrumented}">
+-		    <fileset dir="${src.java.prod}" excludes="**/*.class"/>
+-		</copy>
+-
+-	</target>
+-
+-	
+ 	<target name="compile" depends="compile-server,compile-client">
+ 	</target>
+ 		
+-	<target name="test" depends="compile, instrument">
++	<target name="test" depends="compile">
+ 		<mkdir dir="${docs.junit}"/>
+-		<mkdir dir="${docs.jcoverage}"/>
+ 		
+ 		<junit printsummary="yes" fork="true">
+ 			<classpath>
+ 				<pathelement location="${build.test}"/>
+-				<pathelement location="${build.instrumented}"/>
+ 				<pathelement location="${build.prod}"/>
+-				<path refid="tools.classpath"/>
+ 			</classpath>
+ 				
+ 
+ 			<formatter type="plain"/>
+ 			<formatter type="xml"/>
+@@ -176,12 +143,10 @@
+ 	      <fileset dir="${docs.junit}">
+ 	        <include name="TEST-*.xml"/>
+ 	      </fileset>
+ 	      <report format="frames" todir="${docs.junit}"/>
+ 	    </junitreport>
+-
+-		<report srcdir="${src.java.prod}" destdir="${docs.jcoverage}"/>
+ 	</target>
+ 	
+ 	<target name="jar" depends="test">
+ 		<mkdir dir="${dist}"/>
+ 		<jar basedir="${build.prod}" destfile="${dist}/${jar}" excludes="com/martiansoftware/nailgun/examples/**,**/*.java">
+@@ -216,14 +181,13 @@
+ 	
+ 	<target name="dist" depends="jar, docs">
+ 		<delete file="${dist}/${zip.src}"/>
+ 		<delete file="${dist}/${zip}"/>
+ 		<zip destfile="${dist}/${zip.src}">
+-		    <zipfileset dir="." prefix="nailgun-${version}" excludes="ng,jcoverage.ser,build/**,dist/**"/>
+ 			<zipfileset dir="dist" prefix="nailgun-${version}" includes="${jar},${jar.examples}"/>
+ 		</zip>
+ 		<zip destfile="${dist}/${zip}">
+ 			<zipfileset dir="." prefix="nailgun-${version}" includes="README.txt,Makefile,ng.exe,src/c/**"/>
+ 			<zipfileset dir="dist" prefix="nailgun-${version}" includes="${jar},${jar.examples}"/>
+ 		</zip>
+ 	</target>
+-</project>
+\ No newline at end of file
++</project>
