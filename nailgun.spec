@@ -9,7 +9,7 @@
 Summary:	Framework for running Java from the cli without the JVM startup overhead
 Name:		nailgun
 Version:	0.7.1
-Release:	0.1
+Release:	1
 License:	Apache v2.0
 Group:		Applications/System
 Source0:	http://downloads.sourceforge.net/nailgun/%{name}-src-%{version}.zip
@@ -21,6 +21,7 @@ BuildRequires:	ant
 %{?with_tests:BuildRequires:	ant-junit}
 BuildRequires:	jdk
 BuildRequires:	jpackage-utils
+BuildRequires:	unzip
 Requires:	jpackage-utils
 Requires:	jre
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -34,6 +35,9 @@ triggered by the client (written in C), which handles all I/O.
 %package javadoc
 Summary:	Javadocs for %{name}
 Group:		Documentation
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description javadoc
 This package contains the API documentation for %{name}.
@@ -76,8 +80,8 @@ ln -nfs %{name}-%{version} %{_javadocdir}/%{name}
 %files
 %defattr(644,root,root,755)
 %doc LICENSE.txt README.txt
-%{_javadir}/nailgun.jar
 %attr(755,root,root) %{_bindir}/ng
+%{_javadir}/nailgun*.jar
 
 %if %{with javadoc}
 %files javadoc
