@@ -1,0 +1,12 @@
+do not depend on test. we invoke test separately if needed
+--- nailgun-0.7.1/build.xml~	2014-03-18 17:45:26.000000000 +0200
++++ nailgun-0.7.1/build.xml	2014-03-18 17:49:03.690615471 +0200
+@@ -147,7 +147,7 @@
+ 	    </junitreport>
+ 	</target>
+ 	
+-	<target name="jar" depends="test">
++	<target name="jar">
+ 		<mkdir dir="${dist}"/>
+ 		<jar basedir="${build.prod}" destfile="${dist}/${jar}" excludes="com/martiansoftware/nailgun/examples/**,**/*.java">
+ 			<manifest>

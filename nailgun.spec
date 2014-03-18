@@ -16,6 +16,7 @@ Source0:	http://downloads.sourceforge.net/nailgun/%{name}-src-%{version}.zip
 # Source0-md5:	79365e339275d774b7c5c8b17b7ece40
 URL:		http://martiansoftware.com/nailgun/
 Patch0:		remove-tools-jar-dependencies.patch
+Patch1:		notestdep.patch
 BuildRequires:	ant
 %{?with_tests:BuildRequires:	ant-junit}
 BuildRequires:	jdk
@@ -40,11 +41,12 @@ This package contains the API documentation for %{name}.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 find -name '*.jar' | xargs rm -v
 
 %build
-%ant jar %{?with_tests:test} %{?with_apidocs:javadoc}
+%ant compile-server jar %{?with_tests:test} %{?with_apidocs:javadoc}
 
 # rebuild with our cflags
 %{__cc} -Wall -pedantic %{rpmcppflags} %{rpmcflags} %{rpmldflags} -o ng src/c/ng.c
