@@ -5,7 +5,6 @@
 %bcond_without	javadoc		# don't build javadoc
 %bcond_with	tests		# build without tests
 
-%include	/usr/lib/rpm/macros.java
 Summary:	Framework for running Java from the cli without the JVM startup overhead
 Name:		nailgun
 Version:	0.7.1
