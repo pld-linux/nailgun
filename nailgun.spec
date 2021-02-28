@@ -34,9 +34,7 @@ triggered by the client (written in C), which handles all I/O.
 %package javadoc
 Summary:	Javadocs for %{name}
 Group:		Documentation
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description javadoc
 This package contains the API documentation for %{name}.
